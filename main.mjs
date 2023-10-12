@@ -34,6 +34,7 @@ const redis = new Redis({
   password: REDIS_PASSWORD,
   maxRetriesPerRequest: null,
   offlineQueue: false,
+  enableTLSForSentinelMode: REDIS_TLS ? true : false,
   tls: REDIS_TLS
 });
 
