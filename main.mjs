@@ -27,16 +27,20 @@ const descriptions = {
   [`${PROM_PREFIX}_completed_total`]: "Number of completed jobs",
 };
 
-const redis = new Redis({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  username: REDIS_USERNAME,
-  password: REDIS_PASSWORD,
-  maxRetriesPerRequest: null,
-  offlineQueue: false,
-  enableTLSForSentinelMode: REDIS_TLS ? true : false,
-  tls: REDIS_TLS
-});
+const redis = process.env.REDIS_URL ?
+  new Redis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false
+  }) : new Redis({
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+    username: REDIS_USERNAME,
+    password: REDIS_PASSWORD,
+    maxRetriesPerRequest: null,
+    offlineQueue: false,
+    enableTLSForSentinelMode: REDIS_TLS ? true : false,
+    tls: REDIS_TLS
+  });
 
 app.get("/health", (_, res) => {
   res.code(redis.status === "ready" ? 200 : 503).send();
